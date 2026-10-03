@@ -457,6 +457,20 @@ def admin_close_item(kind, item_id):
 
 
 if __name__ == "__main__":
+    def database_needs_init():
     if not os.path.exists(DATABASE):
-        init_db()
+        return True
+    try:
+        conn = sqlite3.connect(DATABASE)
+        result = conn.execute(
+            "SELECT name FROM sqlite_master WHERE type='table' AND name='lost_items'"
+        ).fetchone()
+        conn.close()
+        return result is None
+    except sqlite3.Error:
+        return True
+
+
+if database_needs_init():
+    init_db()
     app.run(debug=True, host="0.0.0.0", port=5000)
