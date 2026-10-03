@@ -456,8 +456,7 @@ def admin_close_item(kind, item_id):
     return redirect(url_for("admin_items"))
 
 
-if __name__ == "__main__":
-    def database_needs_init():
+def database_needs_init():
     if not os.path.exists(DATABASE):
         return True
     try:
@@ -473,4 +472,6 @@ if __name__ == "__main__":
 
 if database_needs_init():
     init_db()
+
+if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5000)
