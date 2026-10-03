@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+
+<h4 class="mb-4"><i class="fa-solid fa-gauge"></i> Admin Dashboard</h4>
+
+<div class="row g-3 mb-5">
+  <div class="col-6 col-md-2">
+    <div class="stat-card"><h2>{{ stats.total_users }}</h2><p class="mb-0 text-muted small">Users</p></div>
+  </div>
+  <div class="col-6 col-md-2">
+    <div class="stat-card"><h2>{{ stats.total_lost }}</h2><p class="mb-0 text-muted small">Lost Items</p></div>
+  </div>
+  <div class="col-6 col-md-2">
+    <div class="stat-card"><h2>{{ stats.total_found }}</h2><p class="mb-0 text-muted small">Found Items</p></div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card"><h2>{{ stats.pending_matches }}</h2><p class="mb-0 text-muted small">Pending Matches</p></div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card"><h2>{{ stats.confirmed_matches }}</h2><p class="mb-0 text-muted small">Confirmed Matches</p></div>
+  </div>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h5 class="mb-0"><i class="fa-solid fa-code-compare"></i> Pending Matches</h5>
+  <a href="{{ url_for('admin_items') }}" class="btn btn-sm btn-outline-secondary">Manage All Items</a>
+</div>
+
+{% if pending_matches %}
+<div class="table-responsive">
+<table class="table table-hover bg-white rounded shadow-sm">
+  <thead>
+    <tr>
+      <th>Lost Item</th>
+      <th>Found Item</th>
+      <th>Score</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for m in pending_matches %}
+    <tr>
+      <td>{{ m.lost_name }}</td>
+      <td>{{ m.found_name }}</td>
+      <td>{{ (m.match_score * 100)|round(0, 'floor')|int }}%</td>
+      <td>
+        <a href="{{ url_for('admin_update_match', match_id=m.match_id, action='confirm') }}" class="btn btn-sm btn-success">Confirm</a>
+        <a href="{{ url_for('admin_update_match', match_id=m.match_id, action='reject') }}" class="btn btn-sm btn-outline-danger">Reject</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+{% else %}
+<p class="text-muted">No pending matches at the moment.</p>
+{% endif %}
+
+{% endblock %}

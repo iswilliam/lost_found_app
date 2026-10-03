@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Report Lost Item{% endblock %}
+{% block content %}
+<div class="card auth-card" style="max-width:600px;">
+  <div class="card-body p-4">
+    <h4 class="mb-4"><i class="fa-solid fa-triangle-exclamation text-danger"></i> Report a Lost Item</h4>
+    <form method="POST" enctype="multipart/form-data">
+      <div class="mb-3">
+        <label class="form-label">Item Name</label>
+        <input type="text" name="item_name" class="form-control" placeholder="e.g. Blue Backpack" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Category</label>
+        <select name="category" class="form-select" required>
+          <option value="" disabled selected>Select category</option>
+          {% for cat in categories %}
+            <option value="{{ cat }}">{{ cat }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Description</label>
+        <textarea name="description" class="form-control" rows="3" placeholder="Describe the item (color, brand, distinguishing features...)" required></textarea>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Location Lost</label>
+        <input type="text" name="location_lost" class="form-control" placeholder="e.g. Library, Opi Study Centre" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Date Lost</label>
+        <input type="date" name="date_lost" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Photo (optional)</label>
+        <input type="file" name="image" class="form-control" accept="image/*">
+      </div>
+      <button type="submit" class="btn btn-brand w-100">Submit Report</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}Browse Items{% endblock %}
+{% block content %}
+
+<h4 class="mb-3"><i class="fa-solid fa-list"></i> Browse Lost &amp; Found Items</h4>
+
+<form method="GET" class="row g-2 mb-4">
+  <div class="col-md-3">
+    <select name="type" class="form-select">
+      <option value="all" {% if selected_type=='all' %}selected{% endif %}>All</option>
+      <option value="lost" {% if selected_type=='lost' %}selected{% endif %}>Lost Items</option>
+      <option value="found" {% if selected_type=='found' %}selected{% endif %}>Found Items</option>
+    </select>
+  </div>
+  <div class="col-md-3">
+    <select name="category" class="form-select">
+      <option value="">All Categories</option>
+      {% for cat in categories %}
+        <option value="{{ cat }}" {% if selected_category==cat %}selected{% endif %}>{{ cat }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-4">
+    <input type="text" name="q" class="form-control" placeholder="Search by name, description, or location..." value="{{ keyword }}">
+  </div>
+  <div class="col-md-2">
+    <button type="submit" class="btn btn-brand w-100">Search</button>
+  </div>
+</form>
+
+{% if selected_type in ('all', 'lost') %}
+<h5 class="mb-3">Lost Items <span class="text-muted small">({{ lost_items|length }})</span></h5>
+<div class="row g-3 mb-5">
+  {% for item in lost_items %}
+  <div class="col-sm-6 col-md-3">
+    <div class="card item-card">
+      {% if item.image_path %}
+        <img src="{{ url_for('static', filename='uploads/' + item.image_path) }}" class="card-img-top" alt="{{ item.item_name }}">
+      {% else %}
+        <div class="card-img-top d-flex align-items-center justify-content-center text-muted">
+          <i class="fa-regular fa-image fa-2x"></i>
+        </div>
+      {% endif %}
+      <div class="card-body">
+        <span class="badge badge-lost mb-2">Lost</span>
+        {% if item.status == 'matched' %}<span class="badge bg-info text-dark mb-2">Matched</span>{% endif %}
+        <h6 class="card-title">{{ item.item_name }}</h6>
+        <p class="card-text small text-muted mb-1">{{ item.category }}</p>
+        <p class="card-text small mb-1"><i class="fa-solid fa-location-dot"></i> {{ item.location_lost }}</p>
+        <a href="{{ url_for('view_lost_item', lost_id=item.lost_id) }}" class="small">View details &rarr;</a>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <p class="text-muted">No lost items match your search.</p>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% if selected_type in ('all', 'found') %}
+<h5 class="mb-3">Found Items <span class="text-muted small">({{ found_items|length }})</span></h5>
+<div class="row g-3">
+  {% for item in found_items %}
+  <div class="col-sm-6 col-md-3">
+    <div class="card item-card">
+      {% if item.image_path %}
+        <img src="{{ url_for('static', filename='uploads/' + item.image_path) }}" class="card-img-top" alt="{{ item.item_name }}">
+      {% else %}
+        <div class="card-img-top d-flex align-items-center justify-content-center text-muted">
+          <i class="fa-regular fa-image fa-2x"></i>
+        </div>
+      {% endif %}
+      <div class="card-body">
+        <span class="badge badge-found mb-2">Found</span>
+        {% if item.status == 'matched' %}<span class="badge bg-info text-dark mb-2">Matched</span>{% endif %}
+        <h6 class="card-title">{{ item.item_name }}</h6>
+        <p class="card-text small text-muted mb-1">{{ item.category }}</p>
+        <p class="card-text small mb-1"><i class="fa-solid fa-location-dot"></i> {{ item.location_found }}</p>
+        <a href="{{ url_for('view_found_item', found_id=item.found_id) }}" class="small">View details &rarr;</a>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <p class="text-muted">No found items match your search.</p>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% endblock %}

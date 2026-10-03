@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}{{ item.item_name }}{% endblock %}
+{% block content %}
+
+<div class="row">
+  <div class="col-md-5">
+    {% if item.image_path %}
+      <img src="{{ url_for('static', filename='uploads/' + item.image_path) }}" class="img-fluid rounded shadow-sm" alt="{{ item.item_name }}">
+    {% else %}
+      <div class="bg-light rounded d-flex align-items-center justify-content-center text-muted" style="height:250px;">
+        <i class="fa-regular fa-image fa-3x"></i>
+      </div>
+    {% endif %}
+  </div>
+  <div class="col-md-7">
+    <span class="badge {{ 'badge-lost' if item_kind=='lost' else 'badge-found' }} mb-2">
+      {{ 'Lost Item' if item_kind=='lost' else 'Found Item' }}
+    </span>
+    <h3>{{ item.item_name }}</h3>
+    <p class="text-muted">{{ item.category }}</p>
+    <p>{{ item.description }}</p>
+    <table class="table table-sm w-auto">
+      <tr><th>Location</th><td>{{ item.location_lost if item_kind=='lost' else item.location_found }}</td></tr>
+      <tr><th>Date {{ 'Lost' if item_kind=='lost' else 'Found' }}</th><td>{{ item.date_lost if item_kind=='lost' else item.date_found }}</td></tr>
+      <tr><th>Status</th><td><span class="text-capitalize">{{ item.status }}</span></td></tr>
+      <tr><th>Reported On</th><td>{{ item.date_reported }}</td></tr>
+    </table>
+  </div>
+</div>
+
+<hr class="my-4">
+
+<h5><i class="fa-solid fa-link"></i> Possible Matches (Automated Matching Engine)</h5>
+{% if matches %}
+<div class="row g-3 mt-2">
+  {% for m in matches %}
+  <div class="col-md-6">
+    <div class="card item-card p-3">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <h6>{{ m.item_name }}</h6>
+          <p class="small text-muted mb-1">{{ m.category }}</p>
+          <p class="small mb-1"><i class="fa-solid fa-location-dot"></i> {{ m.location_found if item_kind=='lost' else m.location_lost }}</p>
+        </div>
+        <span class="badge bg-{{ 'success' if m.match_status=='confirmed' else ('secondary' if m.match_status=='rejected' else 'warning text-dark') }}">
+          {{ m.match_status }}
+        </span>
+      </div>
+      <div class="mt-2">
+        <small class="text-muted">Match score: {{ (m.match_score * 100)|round(0, 'floor')|int }}%</small>
+        <div class="progress match-score-bar">
+          <div class="progress-bar bg-success" style="width: {{ (m.match_score * 100)|round(0, 'floor')|int }}%;"></div>
+        </div>
+      </div>
+      {% if item_kind == 'lost' %}
+        <a href="{{ url_for('view_found_item', found_id=m.found_id) }}" class="small mt-2">View this found item &rarr;</a>
+      {% else %}
+        <a href="{{ url_for('view_lost_item', lost_id=m.lost_id) }}" class="small mt-2">View this lost item &rarr;</a>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<p class="text-muted">No potential matches found yet. The system automatically checks for matches whenever a new item is reported.</p>
+{% endif %}
+
+<a href="{{ url_for('browse') }}" class="btn btn-outline-secondary mt-4"><i class="fa-solid fa-arrow-left"></i> Back to Browse</a>
+
+{% endblock %}

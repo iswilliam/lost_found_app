@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}Home | NOUN Lost & Found{% endblock %}
+{% block content %}
+
+<div class="hero text-center mb-5">
+  <h1><i class="fa-solid fa-magnifying-glass-location"></i> Lost Something? Found Something?</h1>
+  <p class="lead">A simple way for the NOUN Opi Community Study Centre to reunite lost items with their owners.</p>
+  {% if session.get('user_id') %}
+    <a href="{{ url_for('report_lost') }}" class="btn btn-light btn-lg me-2">Report Lost Item</a>
+    <a href="{{ url_for('report_found') }}" class="btn btn-outline-light btn-lg">Report Found Item</a>
+  {% else %}
+    <a href="{{ url_for('register') }}" class="btn btn-light btn-lg me-2">Get Started</a>
+    <a href="{{ url_for('browse') }}" class="btn btn-outline-light btn-lg">Browse Items</a>
+  {% endif %}
+</div>
+
+<div class="row mb-5 g-3">
+  <div class="col-md-4">
+    <div class="stat-card">
+      <h2>{{ stats.lost_count }}</h2>
+      <p class="mb-0 text-muted">Lost Items Reported</p>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="stat-card">
+      <h2>{{ stats.found_count }}</h2>
+      <p class="mb-0 text-muted">Found Items Reported</p>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="stat-card">
+      <h2>{{ stats.matched_count }}</h2>
+      <p class="mb-0 text-muted">Successful Matches</p>
+    </div>
+  </div>
+</div>
+
+<h4 class="mb-3">Recently Reported Lost Items</h4>
+<div class="row g-3 mb-5">
+  {% for item in recent_lost %}
+  <div class="col-sm-6 col-md-3">
+    <div class="card item-card">
+      {% if item.image_path %}
+        <img src="{{ url_for('static', filename='uploads/' + item.image_path) }}" class="card-img-top" alt="{{ item.item_name }}">
+      {% else %}
+        <div class="card-img-top d-flex align-items-center justify-content-center text-muted">
+          <i class="fa-regular fa-image fa-2x"></i>
+        </div>
+      {% endif %}
+      <div class="card-body">
+        <span class="badge badge-lost mb-2">Lost</span>
+        <h6 class="card-title">{{ item.item_name }}</h6>
+        <p class="card-text small text-muted mb-1">{{ item.location_lost }}</p>
+        <a href="{{ url_for('view_lost_item', lost_id=item.lost_id) }}" class="small">View details &rarr;</a>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <p class="text-muted">No lost items reported yet.</p>
+  {% endfor %}
+</div>
+
+<h4 class="mb-3">Recently Reported Found Items</h4>
+<div class="row g-3">
+  {% for item in recent_found %}
+  <div class="col-sm-6 col-md-3">
+    <div class="card item-card">
+      {% if item.image_path %}
+        <img src="{{ url_for('static', filename='uploads/' + item.image_path) }}" class="card-img-top" alt="{{ item.item_name }}">
+      {% else %}
+        <div class="card-img-top d-flex align-items-center justify-content-center text-muted">
+          <i class="fa-regular fa-image fa-2x"></i>
+        </div>
+      {% endif %}
+      <div class="card-body">
+        <span class="badge badge-found mb-2">Found</span>
+        <h6 class="card-title">{{ item.item_name }}</h6>
+        <p class="card-text small text-muted mb-1">{{ item.location_found }}</p>
+        <a href="{{ url_for('view_found_item', found_id=item.found_id) }}" class="small">View details &rarr;</a>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <p class="text-muted">No found items reported yet.</p>
+  {% endfor %}
+</div>
+
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Manage Items{% endblock %}
+{% block content %}
+
+<h4 class="mb-4"><i class="fa-solid fa-boxes-stacked"></i> Manage All Items</h4>
+
+<h5>Lost Items</h5>
+<div class="table-responsive mb-5">
+<table class="table table-hover bg-white rounded shadow-sm">
+  <thead><tr><th>Item</th><th>Category</th><th>Location</th><th>Status</th><th>Reported</th><th>Action</th></tr></thead>
+  <tbody>
+    {% for item in lost_items %}
+    <tr>
+      <td>{{ item.item_name }}</td>
+      <td>{{ item.category }}</td>
+      <td>{{ item.location_lost }}</td>
+      <td><span class="text-capitalize">{{ item.status }}</span></td>
+      <td>{{ item.date_reported }}</td>
+      <td>
+        {% if item.status != 'closed' %}
+        <a href="{{ url_for('admin_close_item', kind='lost', item_id=item.lost_id) }}" class="btn btn-sm btn-outline-secondary">Close</a>
+        {% endif %}
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="6" class="text-muted">No lost items reported yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+
+<h5>Found Items</h5>
+<div class="table-responsive">
+<table class="table table-hover bg-white rounded shadow-sm">
+  <thead><tr><th>Item</th><th>Category</th><th>Location</th><th>Status</th><th>Reported</th><th>Action</th></tr></thead>
+  <tbody>
+    {% for item in found_items %}
+    <tr>
+      <td>{{ item.item_name }}</td>
+      <td>{{ item.category }}</td>
+      <td>{{ item.location_found }}</td>
+      <td><span class="text-capitalize">{{ item.status }}</span></td>
+      <td>{{ item.date_reported }}</td>
+      <td>
+        {% if item.status != 'closed' %}
+        <a href="{{ url_for('admin_close_item', kind='found', item_id=item.found_id) }}" class="btn btn-sm btn-outline-secondary">Close</a>
+        {% endif %}
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="6" class="text-muted">No found items reported yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+
+{% endblock %}

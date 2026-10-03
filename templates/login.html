@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Login | NOUN Lost & Found{% endblock %}
+{% block content %}
+<div class="card auth-card">
+  <div class="card-body p-4">
+    <h4 class="text-center mb-4"><i class="fa-solid fa-right-to-bracket"></i> Login</h4>
+    <form method="POST">
+      <div class="mb-3">
+        <label class="form-label">Email Address</label>
+        <input type="email" name="email" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Password</label>
+        <input type="password" name="password" class="form-control" required>
+      </div>
+      <button type="submit" class="btn btn-brand w-100">Login</button>
+    </form>
+    <p class="text-center mt-3 mb-0">No account yet? <a href="{{ url_for('register') }}">Register here</a></p>
+    <hr>
+    <p class="text-center small text-muted mb-0">Admin demo login: admin@noun.edu.ng / admin123</p>
+  </div>
+</div>
+{% endblock %}
